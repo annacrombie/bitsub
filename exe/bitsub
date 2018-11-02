@@ -11,15 +11,15 @@ include BitSub
 DIR = '/home/lattis/media/vid/anime/airing'
 
 subs = [
-  make_sub(/horrible.*irozuku.*720/i, DIR, '色づく世界の明日から'),
-  make_sub(/guca.*Okoshiyasu.*chitose.*/i, DIR, 'お越し安ちとせちゃん'),
-  make_sub(/horrible.*gaikotsu.*honda.*720/i, DIR, '骸骨書店員本田さん'),
-  make_sub(/horriblesubs.*golden kamuy.*720/i, DIR, 'ゴルデンカムイ')
+  make_sub(/horrible.*irozuku.*720/i,          DIR, '色づく世界の明日から'),
+  make_sub(/guca.*Okoshiyasu.*chitose.*/i,     DIR, 'お越し安ちとせちゃん'),
+  make_sub(/horrible.*gaikotsu.*honda.*720/i,  DIR, '骸骨書店員本田さん'  ),
+  make_sub(/horriblesubs.*golden kamuy.*720/i, DIR, 'ゴルデンカムイ'      )
 ]
 
 feeds = [
-  open('/home/lattis/dev/nyaa.rss', 'r', &:read),
-  #open('https://nyaa.si/?page=rss&c=1_2&f=2')
+  #open('/home/lattis/dev/nyaa.rss', 'r', &:read),
+  open('https://nyaa.si/?page=rss&c=1_2&f=2')
 ]
 
 subs.each { |s| FileUtils.mkdir_p(s[:dir]) }

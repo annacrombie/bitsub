@@ -56,6 +56,7 @@ module BitSub
         Thread.new { found.push(find.(BitSub.feed(f))) }
       end.each(&:join)
 
+      results = []
       results += found.pop.flatten until found.empty?
 
       results.reject(&profile.settings[:reject])

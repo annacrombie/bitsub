@@ -1,9 +1,5 @@
-RSpec.describe Bitsub do
+RSpec.describe BitSub do
   it 'has a version number' do
-    expect(Bitsub::VERSION).not_to be nil
-  end
-
-  it 'does something useful' do
-    expect(false).to eq(true)
+    expect(BitSub::VERSION).not_to be nil
   end
 end

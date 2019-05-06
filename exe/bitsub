@@ -1,33 +1,30 @@
 #!/usr/bin/env ruby
 
-lib = File.expand_path('../lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-
 require 'bitsub'
 require 'fileutils'
-require 'open-uri'
+
 include BitSub
 
 DIR = '/home/lattis/media/vid/anime/airing'
 
 subs = [
   make_sub(/horrible.*irozuku.*720/i,          DIR, '色づく世界の明日から'),
-  make_sub(/guca.*Okoshiyasu.*chitose.*/i,     DIR, 'お越し安ちとせちゃん'),
   make_sub(/horrible.*gaikotsu.*honda.*720/i,  DIR, '骸骨書店員本田さん'  ),
-  make_sub(/horriblesubs.*golden kamuy.*720/i, DIR, 'ゴルデンカムイ'      )
-]
+].tap { |ss| ss.each { |s| FileUtils.mkdir_p(s[:dir]) } }
 
 feeds = [
-  #open('/home/lattis/dev/nyaa.rss', 'r', &:read),
-  open('https://nyaa.si/?page=rss&c=1_2&f=2')
+  'https://nyaa.si/?page=rss&c=1_2&f=2&q=horrible+irozuku',
+  'https://nyaa.si/?page=rss&c=1_2&f=2&q=gaikotsu+honda'
 ]
 
-subs.each { |s| FileUtils.mkdir_p(s[:dir]) }
 find = find_all(subs)
 
-puts feeds.map { |f| find.(f) }
-          .flatten
-          .reject { |t| t[:downloaded] }
-          .map { |t| [ '--add', t[:link],
-                       '--download-dir', t[:download_dir] ] }
-          .join("\0")
+found = Queue.new
+feeds.map { |f| Thread.new { found.push(find.(feed(f))) } }.first.join
+
+found.pop
+     .flatten
+     .reject { |t| t[:downloaded] }
+     .map { |t| [ '--add', t[:link],
+                  '--download-dir', t[:download_dir] ] }
+     .join("\0") until found.empty?

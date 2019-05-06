@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+bitsub | xargs -0 -n 4 transmission-remote

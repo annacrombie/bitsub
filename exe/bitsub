@@ -1,30 +1,5 @@
 #!/usr/bin/env ruby
 
 require 'bitsub'
-require 'fileutils'
 
-include BitSub
-
-DIR = '/home/lattis/media/vid/anime/airing'
-
-subs = [
-  make_sub(/horrible.*irozuku.*720/i,          DIR, '色づく世界の明日から'),
-  make_sub(/horrible.*gaikotsu.*honda.*720/i,  DIR, '骸骨書店員本田さん'  ),
-].tap { |ss| ss.each { |s| FileUtils.mkdir_p(s[:dir]) } }
-
-feeds = [
-  'https://nyaa.si/?page=rss&c=1_2&f=2&q=horrible+irozuku',
-  'https://nyaa.si/?page=rss&c=1_2&f=2&q=gaikotsu+honda'
-]
-
-find = find_all(subs)
-
-found = Queue.new
-feeds.map { |f| Thread.new { found.push(find.(feed(f))) } }.first.join
-
-found.pop
-     .flatten
-     .reject { |t| t[:downloaded] }
-     .map { |t| [ '--add', t[:link],
-                  '--download-dir', t[:download_dir] ] }
-     .join("\0") until found.empty?
+BitSub::CLI.main

@@ -1,5 +1,9 @@
-require 'rss'
+require 'fileutils'
 require 'open-uri'
+require 'rss'
+
+require 'bitsub/cli'
+require 'bitsub/dsl'
 require 'bitsub/version'
 
 module BitSub
@@ -37,5 +41,8 @@ module BitSub
 
   def feed(uri)
     open(uri, 'r') { |f| RSS::Parser.parse(f) }
+  rescue StandardError => e
+    $stderr.puts "error retreiving feed #{uri}\n->#{e.message}"
+    exit 1
   end
 end

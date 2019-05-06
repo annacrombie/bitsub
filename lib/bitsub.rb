@@ -1,4 +1,5 @@
 require 'rss'
+require 'open-uri'
 require 'bitsub/version'
 
 module BitSub
@@ -31,8 +32,10 @@ module BitSub
   end
 
   def find(rss, pat)
-    RSS::Parser.parse(rss)
-               .items
-               .select { |item| pat.match?(item.title) }
+    rss.items.select { |item| pat.match?(item.title) }
+  end
+
+  def feed(uri)
+    open(uri, 'r') { |f| RSS::Parser.parse(f) }
   end
 end

@@ -41,7 +41,7 @@ module BitSub
         exit 1
       end
 
-      print(sub!(build_profile(source)))
+      sub!(build_profile(source))
     end
 
     def sub!(profile)
@@ -51,17 +51,19 @@ module BitSub
 
       feeds = profile.feeds
       find = BitSub.find_all(subs)
-      found = Queue.new
+
       feeds.map do |f|
-        Thread.new { found.push(find.(BitSub.feed(f))) }
+        Thread.new do
+          find.(BitSub.feed(f))
+            .flatten
+            .reject(&profile.settings[:reject])
+            .map(&profile.settings[:output_fmt])
+            .join(profile.settings[:output_sep])
+            .yield_self do |s|
+            print(s + profile.settings[:output_sep]) unless s.empty?
+          end
+        end
       end.each(&:join)
-
-      results = []
-      results += found.pop.flatten until found.empty?
-
-      results.reject(&profile.settings[:reject])
-             .map(&profile.settings[:output_fmt])
-             .join(profile.settings[:output_sep])
     end
   end
 end

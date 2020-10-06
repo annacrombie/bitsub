@@ -37,9 +37,9 @@ module BitSub
     end
 
     def nyaa(title, subgroup, res: '720')
-      keyword = title.split.first.downcase
+      keyword = title.split[0..4].map(&:downcase).join('+')
 
-      sub(title, /#{subgroup}.*#{keyword}.*#{res}/i)
+      sub(title, /\[#{subgroup}\]\s#{title}.*- \d+ \[#{res}p\]/)
       feed("https://nyaa.si/?page=rss&c=1_2&f=1&q=#{subgroup}+#{keyword}")
     end
 

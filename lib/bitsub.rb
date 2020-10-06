@@ -40,7 +40,7 @@ module BitSub
   end
 
   def feed(uri)
-    open(uri, 'r') { |f| RSS::Parser.parse(f) }
+    URI.open(uri, 'r') { |f| RSS::Parser.parse(f) }
   rescue StandardError => e
     $stderr.puts "error retreiving feed #{uri}\n->#{e.message}"
     exit 1

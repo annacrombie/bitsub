@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'bitsub'
+begin
+  require 'bitsub'
+rescue LoadError
+  $LOAD_PATH.unshift(File.join(File.dirname(__dir__), 'lib'))
+  require 'bitsub'
+end
 
 BitSub::CLI.main
